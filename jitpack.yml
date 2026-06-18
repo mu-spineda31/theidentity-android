@@ -1,0 +1,8 @@
+# JitPack le dice al builder qué JDK usar.
+# AGP 8.2 + Kotlin 1.9 requieren JDK 17.
+jdk:
+  - openjdk17
+
+# Comando que JitPack corre para producir el artifact.
+install:
+  - ./gradlew :identity-sdk:publishReleasePublicationToMavenLocal
