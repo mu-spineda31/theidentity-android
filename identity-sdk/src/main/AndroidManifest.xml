@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Manifest del SDK. La actividad del flujo se declara acá; el cliente NO
+  tiene que copiarla a su propio manifest gracias al manifest merge.
+
+  Los <uses-permission> los declara el cliente en su propio manifest
+  (necesitamos que sea explícito y visible para el revisor de la app).
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name="io.theidentity.sdk.IdentityFlowActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:hardwareAccelerated="true"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+    </application>
+</manifest>
