@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
@@ -69,13 +71,18 @@ class IdentityFlowActivity : ComponentActivity() {
                 }
             }
             webViewClient = object : WebViewClient() {
+                // El nuevo signature (API 23+) reemplaza al deprecated y se
+                // dispara también para subframes. Solo nos importan errores
+                // del main frame — sino abortamos por un favicon que no carga.
                 override fun onReceivedError(
                     view: WebView?,
-                    errorCode: Int,
-                    description: String?,
-                    failingUrl: String?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?,
                 ) {
-                    verification?.handleLoadError(description ?: "WebView error $errorCode")
+                    if (request?.isForMainFrame != true) return
+                    val description = error?.description?.toString()
+                        ?: "WebView error ${error?.errorCode ?: -1}"
+                    verification?.handleLoadError(description)
                     finish()
                 }
             }

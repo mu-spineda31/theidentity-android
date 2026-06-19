@@ -113,8 +113,14 @@ class IdentityVerification(
             "completed" -> {
                 val result = IdentityCompletedResult(
                     verificationId = event.optString("verification_id", token),
-                    decision = IdentityDecision.fromRaw(event.optString("decision", null)),
-                    callbackUrl = event.optString("callback_url", null).takeIf { it.isNotEmpty() },
+                    // optString(key, fallback) exige fallback non-null; usamos
+                    // la versión de 1 arg que retorna "" si no existe, y
+                    // collapsamos vacío → null para que el parser nullable de
+                    // fromRaw caiga al default MANUAL_REVIEW.
+                    decision = IdentityDecision.fromRaw(
+                        event.optString("decision").ifEmpty { null }
+                    ),
+                    callbackUrl = event.optString("callback_url").ifEmpty { null },
                 )
                 onCompleted?.invoke(result)
                 IdentityCallbacks.unregister(token)
